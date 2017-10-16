@@ -6,12 +6,19 @@ MAINTAINER emoose
 
 # Install Node.js and other dependencies
 RUN apt-get update && \
-    apt-get -y install curl && \
-    curl -sL https://deb.nodesource.com/setup | sudo bash - && \
+    apt-get -y install sudo curl && \
+    curl -sL https://deb.nodesource.com/setup_4.x | sudo bash - && \
     apt-get -y install python build-essential nodejs
 
+RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
+
+USER root
+CMD /bin/bash
+
 # Install nodemon
-RUN npm install -g nodemon
+RUN sudo npm install -g nodemon
+
+USER docker
 
 # Provides cached layer for node_modules
 ADD package.json /tmp/package.json
